@@ -1,0 +1,71 @@
+name: "Deploy New Landing Zone"
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      ipamApiScope:
+        description: 'IPAM API Scope'
+        required: true
+        default: '' # Example: 'https://api.ipam.example/scope'
+      ipamUrl:
+        description: 'IPAM URL'
+        required: true
+        default: 'https://ipam-xxxx.azurewebsites.net/api/spaces/CorpSpace/blocks/CorpBlockWestEurope01/reservations'
+      ipamSize:
+        description: 'IPAM Size'
+        required: false
+        default: '24' # This will reserve the next available /24 address space from the Azure IPAM block in IPAM_URL
+
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  Deploy_New_LandingZone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: OIDC Login To Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: Get Available Address Space From IPAM
+        id: getipam
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\pipeline-scripts\fetchAddressPrefix.ps1 `
+              -IPAM_API_SCOPE "${{ github.event.inputs.ipamApiScope }}" `
+              -IPAM_URL "${{ github.event.inputs.ipamUrl }}" `
+              -IPAM_SIZE ${{ github.event.inputs.ipamSize }}
+          azPSVersion: "latest"
+
+      - name: Setup Terraform (Pinned Version)
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: "1.0.0" # Example version, adjust as needed
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Create Terraform Execution Plan
+        run: |
+          terraform plan -out=tfplan \
+            -var "vnet_tag=${{ steps.getipam.outputs.id }}" \
+            -var "address_prefix=${{ steps.getipam.outputs.cidr }}"
+        working-directory: ./terraform
+
+      - name: Apply Terraform Plan
+        run: terraform apply -auto-approve tfplan
+        working-directory: ./terraform
