@@ -43,6 +43,10 @@ jobs:
       - name: Set Azure Account to Specific Subscription
         run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: List pipeline-scripts directory
+        run: ls -la ${{ github.workspace }}/pipeline-scripts
+
+
       - name: Get Available Address Space From IPAM
         id: getipam
         uses: azure/powershell@v1
