@@ -48,11 +48,10 @@ jobs:
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            .\pipeline-scripts\fetchAddressPrefix.ps1 `
-              -IPAM_API_SCOPE "${{ github.event.inputs.ipamApiScope }}" `
-              -IPAM_URL "${{ github.event.inputs.ipamUrl }}" `
-              -IPAM_SIZE ${{ github.event.inputs.ipamSize }}
+            $scriptPath = "${{ github.workspace }}/pipeline-scripts/fetchAddressPrefix.ps1"
+            & $scriptPath -IPAM_API_SCOPE "${{ github.event.inputs.ipamApiScope }}" -IPAM_URL "${{ github.event.inputs.ipamUrl }}" -IPAM_SIZE ${{ github.event.inputs.ipamSize }}
           azPSVersion: "latest"
+
 
       - name: Setup Terraform (Pinned Version)
         uses: hashicorp/setup-terraform@v1
