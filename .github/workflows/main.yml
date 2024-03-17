@@ -66,16 +66,16 @@ jobs:
 
       - name: Initialize Terraform
         run: terraform init
-        working-directory: ./terraform
+        working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
 
       - name: Create Terraform Execution Plan
         run: |
           terraform plan -out=tfplan \
             -var "vnet_tag=${{ steps.getipam.outputs.id }}" \
             -var "address_prefix=${{ steps.getipam.outputs.cidr }}"
-        working-directory: ./terraform
+        working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
 
       - name: Apply Terraform Plan
         run: terraform apply -auto-approve tfplan
-        working-directory: ./terraform
+        working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
 
