@@ -48,15 +48,15 @@ jobs:
 
 
 
-
       - name: Get Available Address Space From IPAM
         id: getipam
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            $scriptPath = "${{ github.workspace }}/Pipeline-scripts/fetchAddressPrefix.ps1"
-            & $scriptPath -IPAM_API_SCOPE "${{ github.event.inputs.ipamApiScope }}" -IPAM_URL "${{ github.event.inputs.ipamUrl }}" -IPAM_SIZE ${{ github.event.inputs.ipamSize }}
+            $scriptPath = "/home/runner/work/Ipam-vending/Ipam-vending/Pipeline-scripts/fetchAddressPrefix.ps1"
+            & pwsh $scriptPath -IPAM_API_SCOPE "${{ github.event.inputs.ipamApiScope }}" -IPAM_URL "${{ github.event.inputs.ipamUrl }}" -IPAM_SIZE ${{ github.event.inputs.ipamSize }}
           azPSVersion: "latest"
+
 
 
       - name: Setup Terraform (Pinned Version)
