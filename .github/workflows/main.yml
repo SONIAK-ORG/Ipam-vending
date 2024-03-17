@@ -62,7 +62,7 @@ jobs:
       - name: Setup Terraform (Pinned Version)
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: "1.0.0" # Example version, adjust as needed
+          terraform_version: "1.7.5" # Example version, adjust as needed
 
       - name: Initialize Terraform
         run: terraform init
