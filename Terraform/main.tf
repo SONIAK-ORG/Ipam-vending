@@ -1,14 +1,19 @@
- terraform {
-   required_providers {
-     azurerm = {
-       source  = "hashicorp/azurerm"
-       version = ">= 3.60.0"
-     }
-   }
- }
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 3.60.0"
+    }
+  }
+}
 
- provider "azurerm" {
-  features {}
+provider "azurerm" {
+ features {}
+ # These environment variables must be set in your CI/CD pipeline or your local environment
+ client_id       = var.client_id # Or "${env("ARM_CLIENT_ID")}" if using environment variables directly
+ client_secret   = var.client_secret # Or "${env("ARM_CLIENT_SECRET")}" if using environment variables directly
+ subscription_id = var.subscription_id # Or "${env("ARM_SUBSCRIPTION_ID")}" if using environment variables directly
+ tenant_id       = var.tenant_id # Or "${env("ARM_TENANT_ID")}" if using environment variables directly
 }
 
 module "lz_vending" {
@@ -16,17 +21,7 @@ module "lz_vending" {
   version = "~>3.4.1" # change this to your desired version, https://www.terraform.io/language/expressions/version-constraints
 
   location = var.primary_location
-
-  # subscription variables for Exisiting Subscription or manually added subscriptions
   subscription_id = var.subscription_id
-  
-
-#  # subscription variables for EA
-#  subscription_alias_enabled = true
-#  subscription_billing_scope = "/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456"
-#  subscription_display_name  = "mysub"
-#  subscription_alias_name    = "mysub"
-#  subscription_workload      = "Production"
 
   network_watcher_resource_group_enabled = true
 
