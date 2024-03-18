@@ -30,5 +30,9 @@ $response = Invoke-RestMethod `
  -Headers $headers `
  -Body $body
 
+# Echoing the response
+Write-Host "Response CIDR: $($response.cidr)"
+Write-Host "Response ID: $($response.id)"
+
 Write-Output "cidr=$($response.cidr)" >> $Env:GITHUB_OUTPUT
 Write-Output "id=$($response.id)" >> $Env:GITHUB_OUTPUT
