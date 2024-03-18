@@ -9,7 +9,9 @@ param (
   [Int]$IPAM_SIZE = "$($Env:IPAM_SIZE)"
 )
 
-$accessToken = ConvertTo-SecureString (Get-AzAccessToken -ResourceUrl $IPAM_API_SCOPE).Token -AsPlainText
+$accessToken = ConvertTo-SecureString (Get-AzAccessToken -ResourceUrl api://179670f7-3d41-4e66-9692-2d50defe8e93).Token -AsPlainText
+
+
 
 $body = @{
     'size' = $IPAM_SIZE
