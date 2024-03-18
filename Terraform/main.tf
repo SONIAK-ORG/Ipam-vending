@@ -10,10 +10,10 @@ terraform {
 provider "azurerm" {
  features {}
  # These environment variables must be set in your CI/CD pipeline or your local environment
- client_id       = var.client_id # Or "${env("ARM_CLIENT_ID")}" if using environment variables directly
- client_secret   = var.client_secret # Or "${env("ARM_CLIENT_SECRET")}" if using environment variables directly
- subscription_id = var.subscription_id # Or "${env("ARM_SUBSCRIPTION_ID")}" if using environment variables directly
- tenant_id       = var.tenant_id # Or "${env("ARM_TENANT_ID")}" if using environment variables directly
+ client_id       = "${env("ARM_CLIENT_ID")}"
+ client_secret   = "${env("ARM_CLIENT_SECRET")}" 
+ subscription_id = "${env("ARM_SUBSCRIPTION_ID")}" 
+ tenant_id       = "${env("ARM_TENANT_ID")}" 
 }
 
 module "lz_vending" {
