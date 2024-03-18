@@ -23,6 +23,13 @@ permissions:
   id-token: write
   contents: read
 
+
+#These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
+env:
+  ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+  ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+  ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+
 jobs:
   Deploy_New_LandingZone:
     runs-on: ubuntu-latest
@@ -32,17 +39,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # This step sets up the Service Principal credentials as environment variables for Terraform
-      - name: Setup Azure Service Principal for Terraform
-        env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-        run: |
-          echo "ARM_CLIENT_ID=${AZURE_CLIENT_ID}" >> $GITHUB_ENV
-          echo "ARM_CLIENT_SECRET=${AZURE_CLIENT_SECRET}" >> $GITHUB_ENV
-          echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
-          echo "ARM_TENANT_ID=${AZURE_TENANT_ID}" >> $GITHUB_ENV
 
       - name: List the contents of the Ipam-vending directory
         run: ls -la /home/runner/work/Ipam-vending/Ipam-vending/
