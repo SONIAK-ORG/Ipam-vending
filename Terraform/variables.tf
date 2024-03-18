@@ -53,6 +53,14 @@ variable "address_space" {
 }
 
 
+ variable "vnet_tag" {
+  type        = string
+  description = "tag"
+}
+
+
+
+
 
 variable "enable_vnet_peering" {
     type        = bool
