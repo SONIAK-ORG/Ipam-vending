@@ -48,17 +48,21 @@ jobs:
           enable-AzPSSession: true
 
 
-      - name: List the contents of the Ipam-vending directory
-        run: ls -la /home/runner/work/Ipam-vending/Ipam-vending/
-
       - name: Get Available Address Space From IPAM
         id: getipam
         uses: azure/powershell@v1
         with:
           inlineScript: |
             $scriptPath = "/home/runner/work/Ipam-vending/Ipam-vending/Pipeline-scripts/fetchAddressPrefix.ps1"
-            & pwsh $scriptPath -IPAM_API_SCOPE "${{ github.event.inputs.ipamApiScope }}" -IPAM_URL "${{ github.event.inputs.ipamUrl }}" -IPAM_SIZE ${{ github.event.inputs.ipamSize }}
+            $ipamApiScope = "${{ github.event.inputs.ipamApiScope }}"
+            $ipamUrl = "${{ github.event.inputs.ipamUrl }}"
+            $ipamSize = ${{ github.event.inputs.ipamSize }}
+            Write-Host "Using IPAM API Scope: $ipamApiScope"
+            Write-Host "Using IPAM URL: $ipamUrl"
+            Write-Host "Requested IPAM Size: $ipamSize"
+            & pwsh $scriptPath -IPAM_API_SCOPE "$ipamApiScope" -IPAM_URL "$ipamUrl" -IPAM_SIZE $ipamSize
           azPSVersion: "latest"
+
 
       - name: Setup Terraform (Pinned Version)
         uses: hashicorp/setup-terraform@v1
