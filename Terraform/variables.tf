@@ -53,9 +53,16 @@ variable "address_space" {
 }
 
 
+
  variable "vnet_tag" {
   type        = string
   description = "tag"
+}
+
+
+ variable "address_prefix" {
+  type        = string
+  description = "addresss"
 }
 
 
