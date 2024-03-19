@@ -9,6 +9,8 @@ terraform {
 
 provider "azurerm" {
  features {}
+
+use_oidc = true
 }
 
 module "lz_vending" {
