@@ -29,7 +29,7 @@ variable "secondary_location" {
 variable "subscription_id" {
   type        = string
   description = "Subscription ID to use for \"connectivity\" resources."
-  default = "9a8b2ebf-21ca-4149-b306-60c058027448"
+  default = "02cb13eb-8d1a-428f-90b5-27b0f9a06292"
 }
 
 
