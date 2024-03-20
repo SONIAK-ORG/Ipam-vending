@@ -20,6 +20,7 @@ features {}
 module "lz_vending" {
   source  = "Azure/lz-vending/azurerm"
   version = "~>3.4.1" # change this to your desired version, https://www.terraform.io/language/expressions/version-constraints
+  disable_telemetry = true
 
   location = var.primary_location
   subscription_id = var.subscription_id
