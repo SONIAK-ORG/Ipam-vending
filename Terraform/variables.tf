@@ -15,7 +15,7 @@ variable "root_name" {
 variable "primary_location" {
   type        = string
   description = "Sets the location for \"primary\" resources to be created in."
-   default     = "northeurope"
+   default     = "eastus"
 }
 
 variable "secondary_location" {
