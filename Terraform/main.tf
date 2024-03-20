@@ -37,10 +37,11 @@ module "lz_vending" {
     vnet1 = {
       name                    = var.virtual_networks_name
       address_space           = var.address_space
-      resource_group_name     = var.resource_group_name
       hub_peering_enabled     = var.enable_vnet_peering
       hub_network_resource_id = "/subscriptions/1ba2c686-9231-4bfd-bb2e-aadb1309cfac/resourceGroups/slz-connectivity-westeurope/providers/Microsoft.Network/virtualNetworks/slz-hub-westeurope"
       hub_peering_use_remote_gateways = false
+
+  resource_group_creation_enabled = true
     }
   }
 }
