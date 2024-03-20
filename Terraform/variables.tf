@@ -25,7 +25,7 @@ variable "secondary_location" {
 }
 
 
-variable "resource_groups"{
+variable "resource_group_name"{
 type        = string
 
 }
