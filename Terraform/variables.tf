@@ -25,6 +25,13 @@ variable "secondary_location" {
 }
 
 
+variable "resource_groups"{
+type        = string
+
+}
+
+
+
 
 variable "subscription_id" {
   type        = string
