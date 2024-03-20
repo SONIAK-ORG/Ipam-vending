@@ -27,7 +27,7 @@ variable "secondary_location" {
 
 variable "resource_group_name"{
 type        = string
-default     = "RG_LZ"
+default     = "LZ-Test_RG"
 
 }
 
