@@ -45,12 +45,7 @@ variable "address_space" {
   default = "LZ-network"
 }
 
-
- variable "resource_group_name" {
-  type        = string
-  description = "resource_group_name"
-  default = "LZ-Test_RG"
-}
+  
 
 
 
