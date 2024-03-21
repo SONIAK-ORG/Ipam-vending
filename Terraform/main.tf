@@ -10,9 +10,9 @@ terraform {
 provider "azurerm" {
  
 
-client_id       = "9ffdadd5-6a69-418a-b754-4689fd9afa7a"
-tenant_id       = "832b0908-3585-4294-a01c-7763fc195006"
-skip_provider_registration = true
+#client_id       = "9ffdadd5-6a69-418a-b754-4689fd9afa7a"
+#tenant_id       = "832b0908-3585-4294-a01c-7763fc195006"
+#skip_provider_registration = true
 #use_oidc = true
 features {}
 }
