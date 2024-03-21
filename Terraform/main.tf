@@ -40,12 +40,12 @@ module "lz_vending" {
     }
   }
 
-  resource_group_creation_enabled = true
+  #resource_group_creation_enabled = true
   
-  resource_groups = {
-    myrg = {
-      name     = "My_LZ_Rg"
-      location = "westeurope"
-    }
-  }
+  #resource_groups = {
+    #myrg = {
+      #name     = "My_LZ_Rg"
+      #location = "westeurope"
+    #}
+  #}
 }
