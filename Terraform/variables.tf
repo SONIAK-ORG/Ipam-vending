@@ -59,7 +59,7 @@ variable "subscription_id" {
 
 
  variable "address_prefix" {
-  type        = string
+  type        = list(string)
   description = "addresss"
 }
 
