@@ -25,11 +25,11 @@ variable "secondary_location" {
 }
 
 
-variable "resource_group_name"{
-type        = string
-default     = "LZ-Test_RG"
+#variable "resource_group_name"{
+#type        = string
+#default     = "LZ-Test_RG"
 
-}
+#}
 
 
 
