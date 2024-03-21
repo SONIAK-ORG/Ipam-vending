@@ -41,10 +41,6 @@ variable "subscription_id" {
 }
 
 
-variable "address_space" {
-  type    = list(string)
-}
-
 
  variable "virtual_networks_name" {
   type        = string
