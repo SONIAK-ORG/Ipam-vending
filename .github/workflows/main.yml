@@ -67,10 +67,23 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: "1.7.3" # Example version, adjust as needed
+          
+      - name: Set up environment variables for subsequent steps
+        run: |
+          echo "ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
 
-      - name: Initialize Terraform
+      - name: Terraform Init
         run: terraform init
         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
 
       - name: Create Terraform Execution Plan
         run: |
