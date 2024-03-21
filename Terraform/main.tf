@@ -25,15 +25,15 @@ module "lz_vending" {
   location                                       = var.primary_location
   subscription_id                                = var.subscription_id
   network_watcher_resource_group_enabled         = false
-  subscription_management_group_association_enabled = true
-  subscription_management_group_id               = "es-landing-zones"
+  subscription_management_group_association_enabled = false
+  #subscription_management_group_id               = "es-landing-zones"
   virtual_network_enabled                        = true
 
   virtual_networks = {
     vnet1 = {
       name                          = var.virtual_networks_name
       address_space                 = var.address_space
-      #resource_group_name           = var.resource_group_name
+      resource_group_name           = var.resource_group_name
       hub_peering_enabled           = var.enable_vnet_peering
       hub_network_resource_id       = "/subscriptions/1ba2c686-9231-4bfd-bb2e-aadb1309cfac/resourceGroups/slz-connectivity-westeurope/providers/Microsoft.Network/virtualNetworks/slz-hub-westeurope"
       hub_peering_use_remote_gateways = false
