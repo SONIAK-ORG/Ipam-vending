@@ -25,8 +25,8 @@ module "lz_vending" {
   location                                       = var.primary_location
   subscription_id                                = var.subscription_id
   network_watcher_resource_group_enabled         = false
-  subscription_management_group_association_enabled = false
-  #subscription_management_group_id               = "es-landing-zones"
+  subscription_management_group_association_enabled = true
+  subscription_management_group_id               = "es-landing-zones"
   virtual_network_enabled                        = true
 
   virtual_networks = {
