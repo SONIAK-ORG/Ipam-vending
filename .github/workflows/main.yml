@@ -10,7 +10,7 @@ on:
       ipamUrl:
         description: 'IPAM URL'
         required: true
-        default: 'https://ipam-xxxx.azurewebsites.net/api/spaces/CorpSpace/blocks/CorpBlockWestEurope01/reservations'
+        default: 'https://ipam-qyquwdrrjdtxe.azurewebsites.net/api/spaces/Test-bloc-space/blocks/Test-Block/reservations'
       ipamSize:
         description: 'IPAM Size'
         required: false
