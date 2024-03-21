@@ -89,7 +89,7 @@ jobs:
         run: |
           terraform plan -out=tfplan \
             -var "vnet_tag=${{ steps.getipam.outputs.id }}" \
-            -var "address_prefix=${{ steps.getipam.outputs.cidr }}"
+            -var "address_space=${{ steps.getipam.outputs.cidr }}"
         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
 
       - name: Apply Terraform Plan
