@@ -3,31 +3,18 @@ name: "Deploy New Landing Zone"
 on:
   workflow_dispatch:
     inputs:
-      #ipamApiScope:
-        #description: 'IPAM API Scope'
-        #required: true
-        #default: '' # Example: 'https://api.ipam.example/scope'
       ipamUrl:
         description: 'IPAM URL'
         required: true
         default: 'https://ipam-qyquwdrrjdtxe.azurewebsites.net/api/spaces/Test-bloc-space/blocks/Test-Block/reservations'
       ipamSize:
         description: 'IPAM Size'
-        required: false
+        required: true
         default: '24' # This will reserve the next available /24 address space from the Azure IPAM block in IPAM_URL
 
 permissions:
   id-token: write
   contents: read
-
-
-#These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
-env:
-  IPAM_API_SCOPE : "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IlhSdmtvOFA3QTNVYVdTblU3Yk05blQwTWpoQSJ9.eyJhdWQiOiIxNzk2NzBmNy0zZDQxLTRlNjYtOTY5Mi0yZDUwZGVmZThlOTMiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vODMyYjA5MDgtMzU4NS00Mjk0LWEwMWMtNzc2M2ZjMTk1MDA2L3YyLjAiLCJpYXQiOjE3MTA3NzIyNDMsIm5iZiI6MTcxMDc3MjI0MywiZXhwIjoxNzEwNzc3NTcwLCJhaW8iOiJBWVFBZS84V0FBQUFla0pCTGxyNHB4TU5rc0RzZW..."
-  ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
-  ARM_CLIENT_SECRET: "${{ secrets.AZURE_CLIENT_SECRET }}"
-  ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
-  ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
 
 jobs:
   Deploy_New_LandingZone:
@@ -46,14 +33,13 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
 
-
       - name: Get Available Address Space From IPAM
         id: getipam
         uses: azure/powershell@v1
         with:
           inlineScript: |
             $scriptPath = "/home/runner/work/Ipam-vending/Ipam-vending/Pipeline-scripts/fetchAddressPrefix.ps1"
-            $ipamApiScope = "${{ github.event.inputs.ipamApiScope }}"
+            $ipamApiScope = "${{ secrets.IPAM_API_SCOPE }}"
             $ipamUrl = "${{ github.event.inputs.ipamUrl }}"
             $ipamSize = ${{ github.event.inputs.ipamSize }}
             Write-Host "Using IPAM API Scope: $ipamApiScope"
@@ -66,7 +52,7 @@ jobs:
       - name: Setup Terraform (Pinned Version)
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: "1.7.3" # Example version, adjust as needed
+          terraform_version: "1.7.3" 
           
       - name: Set up environment variables for subsequent steps
         run: |
