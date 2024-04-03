@@ -2,15 +2,6 @@ name: "Deploy New Landing Zone"
 
 on:
   workflow_dispatch:
-    inputs:
-      ipamUrl:
-        description: 'IPAM URL'
-        required: true
-        default: 'https://ipam-qyquwdrrjdtxe.azurewebsites.net/api/spaces/Test-bloc-space/blocks/Test-Block/reservations'
-      ipamSize:
-        description: 'IPAM Size'
-        required: true
-        default: '24' # This will reserve the next available /24 address space from the Azure IPAM block in IPAM_URL
 
 permissions:
   id-token: write
@@ -40,8 +31,8 @@ jobs:
           inlineScript: |
             $scriptPath = "/home/runner/work/Ipam-vending/Ipam-vending/Pipeline-scripts/fetchAddressPrefix.ps1"
             $ipamApiScope = "${{ secrets.IPAM_API_SCOPE }}"
-            $ipamUrl = "${{ github.event.inputs.ipamUrl }}"
-            $ipamSize = ${{ github.event.inputs.ipamSize }}
+            $ipamUrl = "${{ secrets.IPAM_URL }}"
+            $ipamSize = "${{ secrets.IPAM_SIZE }}"
             Write-Host "Using IPAM API Scope: $ipamApiScope"
             Write-Host "Using IPAM URL: $ipamUrl"
             Write-Host "Requested IPAM Size: $ipamSize"
