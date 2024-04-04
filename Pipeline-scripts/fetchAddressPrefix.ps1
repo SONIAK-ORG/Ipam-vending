@@ -1,18 +1,35 @@
+# param (
+#   [Parameter()]
+#   [Int]$IPAM_SIZE = "$($Env:IPAM_SIZE)",
+
+#   [Parameter()]
+#   [String]$engineClientId = "$($Env:ENGINE_CLIENT_ID)",
+
+#   [Parameter()]
+#   [String]$appName = "$($Env:APP_NAME)",
+
+#   [Parameter()]
+#   [String]$space = "$($Env:SPACE)",
+
+#   [Parameter()]
+#   [String]$block = "$($Env:BLOCK)"
+# )
+
 param (
   [Parameter()]
-  [Int]$IPAM_SIZE = "$($Env:IPAM_SIZE)",
+  [Int]$IPAM_SIZE = "24",
 
   [Parameter()]
-  [String]$engineClientId = "$($Env:ENGINE_CLIENT_ID)",
+  [String]$engineClientId = "03885f20-6165-4a52-8eed-45d86b8c9efe",
 
   [Parameter()]
-  [String]$appName = "$($Env:APP_NAME)",
+  [String]$appName = "ipam-oxyskfjzsz5pw.",
 
   [Parameter()]
-  [String]$space = "$($Env:SPACE)",
+  [String]$space = "Postman",
 
   [Parameter()]
-  [String]$block = "$($Env:BLOCK)"
+  [String]$block = "Posted"
 )
 
 $accessToken = ConvertTo-SecureString (Get-AzAccessToken -ResourceUrl api://$engineClientId).Token -AsPlainText
