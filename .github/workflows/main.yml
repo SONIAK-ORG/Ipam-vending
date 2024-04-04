@@ -30,21 +30,24 @@ jobs:
         with:
           inlineScript: |
             $scriptPath = "/home/runner/work/Ipam-vending/Ipam-vending/Pipeline-scripts/fetchAddressPrefix.ps1"
-            $ipamApiScope = "${{ secrets.IPAM_API_SCOPE }}"
-            $ipamUrl = "${{ secrets.IPAM_URL }}"
             $ipamSize = "${{ secrets.IPAM_SIZE }}"
-            Write-Host "Using IPAM API Scope: $ipamApiScope"
-            Write-Host "Using IPAM URL: $ipamUrl"
+            $engineClientId = "${{ secrets.ENGINE_CLIENT_ID }}"
+            $appName = "${{ secrets.APP_NAME }}"
+            $space = "${{ secrets.SPACE }}"
+            $block = "${{ secrets.BLOCK }}"
             Write-Host "Requested IPAM Size: $ipamSize"
-            & pwsh $scriptPath -IPAM_API_SCOPE "$ipamApiScope" -IPAM_URL "$ipamUrl" -IPAM_SIZE $ipamSize
+            Write-Host "Using Engine Client ID: $engineClientId"
+            Write-Host "Using App Name: $appName"
+            Write-Host "Using Space: $space"
+            Write-Host "Using Block: $block"
+            & pwsh $scriptPath -IPAM_SIZE $ipamSize -engineClientId "$engineClientId" -appName "$appName" -space "$space" -block "$block"
           azPSVersion: "latest"
-
 
       - name: Setup Terraform (Pinned Version)
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: "1.7.3" 
-          
+          terraform_version: "1.7.3"
+
       - name: Set up environment variables for subsequent steps
         run: |
           echo "ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
@@ -61,7 +64,6 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-
       - name: Create Terraform Execution Plan
         run: |
           terraform plan -out=tfplan \
@@ -73,5 +75,3 @@ jobs:
         run: |
           terraform apply -auto-approve tfplan
         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
-
-
