@@ -15,22 +15,6 @@ param (
   [String]$block = "$($Env:BLOCK)"
 )
 
-# param (
-#   [Parameter()]
-#   [Int]$IPAM_SIZE = "24",
-
-#   [Parameter()]
-#   [String]$engineClientId = "03885f20-6165-4a52-8eed-45d86b8c9efe",
-
-#   [Parameter()]
-#   [String]$appName = "ipam-oxyskfjzsz5pw",
-
-#   [Parameter()]
-#   [String]$space = "Postman",
-
-#   [Parameter()]
-#   [String]$block = "Posted"
-# )
 
 # Retrieve the access token
 $accessTokenRaw = Get-AzAccessToken -ResourceUrl api://$engineClientId
