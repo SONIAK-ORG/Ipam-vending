@@ -23,7 +23,7 @@ param (
   [String]$engineClientId = "03885f20-6165-4a52-8eed-45d86b8c9efe",
 
   [Parameter()]
-  [String]$appName = "ipam-oxyskfjzsz5pw.",
+  [String]$appName = "ipam-oxyskfjzsz5pw",
 
   [Parameter()]
   [String]$space = "Postman",
