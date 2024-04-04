@@ -29,19 +29,21 @@ jobs:
         uses: azure/powershell@v1
         with:
           inlineScript: |
+            $ErrorActionPreference = 'Stop' # Ensure any error halts the script
             $scriptPath = "/home/runner/work/Ipam-vending/Ipam-vending/Pipeline-scripts/fetchAddressPrefix.ps1"
             $ipamSize = "${{ secrets.IPAM_SIZE }}"
             $engineClientId = "${{ secrets.ENGINE_CLIENT_ID }}"
             $appName = "${{ secrets.APP_NAME }}"
             $space = "${{ secrets.SPACE }}"
             $block = "${{ secrets.BLOCK }}"
-            Write-Host "Requested IPAM Size: $ipamSize"
-            Write-Host "Using Engine Client ID: $engineClientId"
-            Write-Host "Using App Name: $appName"
-            Write-Host "Using Space: $space"
-            Write-Host "Using Block: $block"
-            & pwsh $scriptPath -IPAM_SIZE $ipamSize -engineClientId $engineClientId -appName $appName -space $space -block $block
+            try {
+              & pwsh $scriptPath -IPAM_SIZE $ipamSize -engineClientId $engineClientId -appName $appName -space $space -block $block
+            } catch {
+              Write-Error "Script failed with error: $_"
+              exit 1
+            }
           azPSVersion: "latest"
+
 
       - name: Setup Terraform (Pinned Version)
         uses: hashicorp/setup-terraform@v1
