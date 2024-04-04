@@ -40,7 +40,7 @@ jobs:
             Write-Host "Using App Name: $appName"
             Write-Host "Using Space: $space"
             Write-Host "Using Block: $block"
-            & pwsh $scriptPath -IPAM_SIZE $ipamSize -engineClientId "$engineClientId" -appName "$appName" -space "$space" -block "$block"
+            & pwsh $scriptPath -IPAM_SIZE $ipamSize -engineClientId $engineClientId -appName $appName -space $space -block $block
           azPSVersion: "latest"
 
       - name: Setup Terraform (Pinned Version)
