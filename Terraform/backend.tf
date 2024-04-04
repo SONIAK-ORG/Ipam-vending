@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
-    resource_group_name   = "terraform-lz-rg"
-    storage_account_name  = "lamdingzonesa"
+    resource_group_name   = "Terraform-State-RG"
+    storage_account_name  = "mytfstatestoragealz"
     container_name        = "tfstate"
     key                   = "terraform.tfstate"
     #use_oidc              = true
