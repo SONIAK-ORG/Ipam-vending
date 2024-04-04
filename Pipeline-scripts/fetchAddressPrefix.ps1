@@ -1,17 +1,23 @@
 param (
   [Parameter()]
-  [String]$IPAM_API_SCOPE = "$($Env:IPAM_API_SCOPE)",
+  [Int]$IPAM_SIZE = "$($Env:IPAM_SIZE)",
 
   [Parameter()]
-  [String]$IPAM_URL = "$($Env:IPAM_URL)",
+  [String]$engineClientId = "$($Env:ENGINE_CLIENT_ID)",
 
   [Parameter()]
-  [Int]$IPAM_SIZE = "$($Env:IPAM_SIZE)"
+  [String]$appName = "$($Env:APP_NAME)",
+
+  [Parameter()]
+  [String]$space = "$($Env:SPACE)",
+
+  [Parameter()]
+  [String]$block = "$($Env:BLOCK)"
 )
 
-$accessToken = ConvertTo-SecureString (Get-AzAccessToken -ResourceUrl api://03885f20-6165-4a52-8eed-45d86b8c9efe).Token -AsPlainText
+$accessToken = ConvertTo-SecureString (Get-AzAccessToken -ResourceUrl api://$engineClientId).Token -AsPlainText
 
-
+$requestUrl = "https://$appName.azurewebsites.net/api/spaces/$space/blocks/$block/reservations"
 
 $body = @{
     'size' = $IPAM_SIZE
@@ -24,7 +30,7 @@ $headers = @{
 
 $response = Invoke-RestMethod `
  -Method 'Post' `
- -Uri $IPAM_URL `
+ -Uri $requestUrl ` # Correctly using $requestUrl for the API call
  -Authentication 'Bearer' `
  -Token $accessToken `
  -Headers $headers `
