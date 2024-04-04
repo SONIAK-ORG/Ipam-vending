@@ -19,7 +19,7 @@ features {}
 
 module "lz_vending" {
   source  = "Azure/lz-vending/azurerm"
-  version = "~>3.4.1" # Specify the version as per your requirements
+  version = "~>4.0.2" # Specify the version as per your requirements
   disable_telemetry = true
 
   location                                       = var.primary_location
