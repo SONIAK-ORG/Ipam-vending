@@ -32,9 +32,17 @@ param (
   [String]$block = "Posted"
 )
 
-$accessToken = ConvertTo-SecureString (Get-AzAccessToken -ResourceUrl api://$engineClientId).Token -AsPlainText
+# Retrieve the access token
+$accessTokenRaw = Get-AzAccessToken -ResourceUrl api://$engineClientId
+$accessToken = $accessTokenRaw.Token
+$accessTokenSecure = ConvertTo-SecureString $accessToken -AsPlainText
 
+# Build the request URL
 $requestUrl = "https://$appName.azurewebsites.net/api/spaces/$space/blocks/$block/reservations"
+
+# Printing the values to the console
+Write-Host "Access Token: $accessToken"  # Caution: Sensitive Information
+Write-Host "Request URL: $requestUrl"
 
 $body = @{
     'size' = $IPAM_SIZE
@@ -43,13 +51,12 @@ $body = @{
 $headers = @{
   'Accept' = 'application/json'
   'Content-Type' = 'application/json'
+  'Authorization' = "Bearer $accessToken"  # Correct way to include the bearer token
 }
 
 $response = Invoke-RestMethod `
  -Method 'Post' `
- -Uri $requestUrl ` # Correctly using $requestUrl for the API call
- -Authentication 'Bearer' `
- -Token $accessToken `
+ -Uri $requestUrl `
  -Headers $headers `
  -Body $body
 
