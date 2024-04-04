@@ -15,35 +15,30 @@ param (
   [String]$block = "$($Env:BLOCK)"
 )
 
+try {
+    $accessTokenRaw = Get-AzAccessToken -ResourceUrl api://$engineClientId -ErrorAction Stop
+    $accessToken = $accessTokenRaw.Token
 
-# Retrieve the access token
-$accessTokenRaw = Get-AzAccessToken -ResourceUrl api://$engineClientId
-$accessToken = $accessTokenRaw.Token
-$accessTokenSecure = ConvertTo-SecureString $accessToken -AsPlainText
+    $requestUrl = "https://$appName.azurewebsites.net/api/spaces/$space/blocks/$block/reservations"
+    
+    $body = @{
+        'size' = $IPAM_SIZE
+    } | ConvertTo-Json
 
-# Build the request URL
-$requestUrl = "https://$appName.azurewebsites.net/api/spaces/$space/blocks/$block/reservations"
+    $headers = @{
+      'Accept' = 'application/json'
+      'Content-Type' = 'application/json'
+      'Authorization' = "Bearer $accessToken"
+    }
 
+    $response = Invoke-RestMethod -Method 'Post' -Uri $requestUrl -Headers $headers -Body $body -ErrorAction Stop
 
-$body = @{
-    'size' = $IPAM_SIZE
-} | ConvertTo-Json
+    Write-Host "Response CIDR: $($response.cidr)"
+    Write-Host "Response ID: $($response.id)"
 
-$headers = @{
-  'Accept' = 'application/json'
-  'Content-Type' = 'application/json'
-  'Authorization' = "Bearer $accessToken"  # Correct way to include the bearer token
+    Write-Output "cidr=$($response.cidr)" >> $Env:GITHUB_OUTPUT
+    Write-Output "id=$($response.id)" >> $Env:GITHUB_OUTPUT
+} catch {
+    Write-Error "Error encountered: $_"
+    exit 1
 }
-
-$response = Invoke-RestMethod `
- -Method 'Post' `
- -Uri $requestUrl `
- -Headers $headers `
- -Body $body
-
-# Echoing the response
-Write-Host "Response CIDR: $($response.cidr)"
-Write-Host "Response ID: $($response.id)"
-
-Write-Output "cidr=$($response.cidr)" >> $Env:GITHUB_OUTPUT
-Write-Output "id=$($response.id)" >> $Env:GITHUB_OUTPUT
