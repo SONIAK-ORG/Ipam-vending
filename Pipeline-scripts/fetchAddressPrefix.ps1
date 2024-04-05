@@ -16,9 +16,11 @@ param (
 )
 
 try {
+    # Retrieve the access token
     $accessTokenRaw = Get-AzAccessToken -ResourceUrl api://$engineClientId -ErrorAction Stop
     $accessToken = $accessTokenRaw.Token
 
+    # Build the request URL
     $requestUrl = "https://$appName.azurewebsites.net/api/spaces/$space/blocks/$block/reservations"
     
     $body = @{
@@ -42,3 +44,4 @@ try {
     Write-Error "Error encountered: $_"
     exit 1
 }
+
