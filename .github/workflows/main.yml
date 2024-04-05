@@ -26,7 +26,7 @@ jobs:
 
       - name: Get Available Address Space From IPAM
         id: getipam
-        uses: azure/powershell@v1
+        uses: azure/powershell@v5
         with:
           inlineScript: |
             $ErrorActionPreference = 'Stop' # Ensure any error halts the script
