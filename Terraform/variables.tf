@@ -34,11 +34,11 @@ default     = "LZ-Test_RG"
 
 
 
-variable "subscription_id" {
-  type        = string
-  description = "Subscription ID to use for \"connectivity\" resources."
-  default = "02cb13eb-8d1a-428f-90b5-27b0f9a06292"
-}
+#variable "subscription_id" {
+#  type        = string
+#  description = "Subscription ID to use for \"connectivity\" resources."
+#  default = "02cb13eb-8d1a-428f-90b5-27b0f9a06292"
+#}
 
 
 
