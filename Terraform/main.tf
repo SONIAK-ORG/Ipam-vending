@@ -25,7 +25,7 @@ module "lz_vending" {
   location                                       = var.primary_location
   subscription_id                                = var.subscription_id
   network_watcher_resource_group_enabled         = false
-  subscription_management_group_association_enabled = true
+  #subscription_management_group_association_enabled = true
   subscription_management_group_id               = "832b0908-3585-4294-a01c-7763fc195006"
   virtual_network_enabled                        = true
 
