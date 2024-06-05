@@ -15,14 +15,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug Secrets
+        run: echo '${{ secrets.AZURE_CREDENTIALS }}'
+        shell: bash
+
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
-          auth-type: SERVICE_PRINCIPAL
-
-
+          auth-type: 'SERVICE_PRINCIPAL'
 
       - name: Get Available Address Space From IPAM
         id: getipam
@@ -55,10 +57,10 @@ jobs:
         run: terraform init
         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
         env:
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_CLIENT_ID: ${{ env.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ env.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ env.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ env.ARM_TENANT_ID }}
 
       - name: Create Terraform Execution Plan
         run: |
@@ -71,3 +73,79 @@ jobs:
         run: |
           terraform apply -auto-approve tfplan
         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
+
+
+
+# name: "Deploy New Landing Zone"
+
+# on:
+#   workflow_dispatch:
+
+# permissions:
+#   contents: read
+
+# jobs:
+#   Deploy_New_LandingZone:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Repo
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
+
+#       - name: Azure Login
+#         uses: azure/login@v1
+#         with:
+#           creds: ${{ secrets.AZURE_CREDENTIALS }}
+#           enable-AzPSSession: true
+#           auth-type: SERVICE_PRINCIPAL
+
+
+
+#       - name: Get Available Address Space From IPAM
+#         id: getipam
+#         uses: azure/powershell@v1
+#         with:
+#           inlineScript: |
+#             $scriptPath = "${env:GITHUB_WORKSPACE}/Pipeline-scripts/fetchAddressPrefix.ps1"
+#             $ipamSize = "${{ secrets.IPAM_SIZE }}"
+#             $engineClientId = "${{ secrets.ENGINE_CLIENT_ID }}"
+#             $appName = "${{ secrets.APP_NAME }}"
+#             $space = "${{ secrets.SPACE }}"
+#             $block = "${{ secrets.BLOCK }}"
+#             & pwsh $scriptPath -IPAM_SIZE $ipamSize -engineClientId $engineClientId -appName $appName -space $space -block $block
+#           azPSVersion: "latest"
+
+#       - name: Setup Terraform (Pinned Version)
+#         uses: hashicorp/setup-terraform@v1
+#         with:
+#           terraform_version: "1.7.3"
+
+#       - name: Set up environment variables for subsequent steps
+#         run: |
+#           echo "ARM_CLIENT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.clientId')" >> $GITHUB_ENV
+#           echo "ARM_CLIENT_SECRET=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.clientSecret')" >> $GITHUB_ENV
+#           echo "ARM_SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.subscriptionId')" >> $GITHUB_ENV
+#           echo "ARM_TENANT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.tenantId')" >> $GITHUB_ENV
+#         shell: bash
+
+#       - name: Terraform Init
+#         run: terraform init
+#         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
+#         env:
+#           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+#           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+#           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+#           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+#       - name: Create Terraform Execution Plan
+#         run: |
+#           terraform plan -out=tfplan \
+#             -var "vnet_tag=${{ steps.getipam.outputs.id }}" \
+#             -var 'address_prefix=["${{ steps.getipam.outputs.cidr }}"]'
+#         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
+
+#       - name: Apply Terraform Plan
+#         run: |
+#           terraform apply -auto-approve tfplan
+#         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
