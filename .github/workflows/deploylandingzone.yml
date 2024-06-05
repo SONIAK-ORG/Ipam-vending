@@ -15,15 +15,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install PowerShell
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget apt-transport-https software-properties-common
-          wget -q "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb"
-          sudo dpkg -i packages-microsoft-prod.deb
-          sudo apt-get update
-          sudo apt-get install -y powershell
-        shell: bash
+      # - name: Install PowerShell
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y wget apt-transport-https software-properties-common
+      #     wget -q "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb"
+      #     sudo dpkg -i packages-microsoft-prod.deb
+      #     sudo apt-get update
+      #     sudo apt-get install -y powershell
+      #   shell: bash
 
       - name: Uninstall Existing Az.Accounts Modules
         run: |
@@ -42,12 +42,6 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
 
-      - name: Debug Path
-        run: |
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          ls -al $GITHUB_WORKSPACE/Pipeline-scripts
-        shell: bash
-
       - name: Get Available Address Space From IPAM
         id: getipam
         uses: azure/powershell@v1
@@ -59,7 +53,7 @@ jobs:
             $appName = "${{ secrets.APP_NAME }}"
             $space = "${{ secrets.SPACE }}"
             $block = "${{ secrets.BLOCK }}"
-            pwsh -File $scriptPath -IPAM_SIZE $ipamSize -engineClientId $engineClientId -appName $appName -space $space -block $block
+            & pwsh $scriptPath -IPAM_SIZE $ipamSize -engineClientId $engineClientId -appName $appName -space $space -block $block
           azPSVersion: "latest"
 
       - name: Setup Terraform (Pinned Version)
@@ -95,201 +89,6 @@ jobs:
         run: |
           terraform apply -auto-approve tfplan
         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
-
-
-
-# name: "Deploy New Landing Zone"
-
-# on:
-#   workflow_dispatch:
-
-# permissions:
-#   contents: read
-
-# jobs:
-#   Deploy_New_LandingZone:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout Repo
-#         uses: actions/checkout@v3
-#         with:
-#           fetch-depth: 0
-
-#       - name: Install PowerShell
-#         run: |
-#           sudo apt-get update
-#           sudo apt-get install -y wget apt-transport-https software-properties-common
-#           wget -q "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb"
-#           sudo dpkg -i packages-microsoft-prod.deb
-#           sudo apt-get update
-#           sudo apt-get install -y powershell
-#         shell: bash
-
-#       - name: Uninstall Existing Az.Accounts Modules
-#         run: |
-#           pwsh -Command "Get-Module -ListAvailable Az.Accounts | ForEach-Object { Uninstall-Module -Name $_.Name -AllVersions -Force }"
-#         shell: bash
-
-#       - name: Install Az.Accounts 2.19.0
-#         run: |
-#           pwsh -Command "Install-Module -Name Az.Accounts -RequiredVersion 2.19.0 -Force -AllowClobber"
-#           pwsh -Command "Get-Module -Name Az.Accounts -ListAvailable"
-#         shell: bash
-
-#       - name: Azure Login
-#         uses: azure/login@v1
-#         with:
-#           creds: ${{ secrets.AZURE_CREDENTIALS }}
-#           enable-AzPSSession: true
-
-#       - name: Debug Path
-#         run: |
-#           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-#           ls -al $GITHUB_WORKSPACE/Pipeline-scripts
-#         shell: bash
-
-#       - name: Get Available Address Space From IPAM
-#         id: getipam
-#         uses: azure/powershell@v1
-#         with:
-#           inlineScript: |
-#             $scriptPath = "${{ env.GITHUB_WORKSPACE }}/Pipeline-scripts/fetchAddressPrefix.ps1"
-#             $ipamSize = "${{ secrets.IPAM_SIZE }}"
-#             $engineClientId = "${{ secrets.ENGINE_CLIENT_ID }}"
-#             $appName = "${{ secrets.APP_NAME }}"
-#             $space = "${{ secrets.SPACE }}"
-#             $block = "${{ secrets.BLOCK }}"
-#             pwsh $scriptPath -IPAM_SIZE $ipamSize -engineClientId $engineClientId -appName $appName -space $space -block $block
-#           azPSVersion: "latest"
-
-#       - name: Setup Terraform (Pinned Version)
-#         uses: hashicorp/setup-terraform@v1
-#         with:
-#           terraform_version: "1.7.3"
-
-#       - name: Set up environment variables for subsequent steps
-#         run: |
-#           echo "ARM_CLIENT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.clientId')" >> $GITHUB_ENV
-#           echo "ARM_CLIENT_SECRET=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.clientSecret')" >> $GITHUB_ENV
-#           echo "ARM_SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.subscriptionId')" >> $GITHUB_ENV
-#           echo "ARM_TENANT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.tenantId')" >> $GITHUB_ENV
-#         shell: bash
-
-#       - name: Terraform Init
-#         run: terraform init
-#         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
-#         env:
-#           ARM_CLIENT_ID: ${{ env.ARM_CLIENT_ID }}
-#           ARM_CLIENT_SECRET: ${{ env.ARM_CLIENT_SECRET }}
-#           ARM_SUBSCRIPTION_ID: ${{ env.ARM_SUBSCRIPTION_ID }}
-#           ARM_TENANT_ID: ${{ env.ARM_TENANT_ID }}
-
-#       - name: Create Terraform Execution Plan
-#         run: |
-#           terraform plan -out=tfplan \
-#             -var "vnet_tag=${{ steps.getipam.outputs.id }}" \
-#             -var 'address_prefix=["${{ steps.getipam.outputs.cidr }}"]'
-#         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
-
-#       - name: Apply Terraform Plan
-#         run: |
-#           terraform apply -auto-approve tfplan
-#         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
-
-
-
-
-# name: "Deploy New Landing Zone"
-
-# on:
-#   workflow_dispatch:
-
-# permissions:
-#   contents: read
-
-# jobs:
-#   Deploy_New_LandingZone:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout Repo
-#         uses: actions/checkout@v3
-#         with:
-#           fetch-depth: 0
-
-#       # - name: Install PowerShell
-#       #   run: |
-#       #     sudo apt-get update
-#       #     sudo apt-get install -y wget apt-transport-https software-properties-common
-#       #     wget -q "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb"
-#       #     sudo dpkg -i packages-microsoft-prod.deb
-#       #     sudo apt-get update
-#       #     sudo apt-get install -y powershell
-#       #   shell: bash
-
-#       - name: Uninstall Existing Az.Accounts Modules
-#         run: |
-#           pwsh -Command "Get-Module -ListAvailable Az.Accounts | ForEach-Object { Uninstall-Module -Name $_.Name -AllVersions -Force }"
-#         shell: bash
-
-#       - name: Install Az.Accounts 2.19.0
-#         run: |
-#           pwsh -Command "Install-Module -Name Az.Accounts -RequiredVersion 2.19.0 -Force -AllowClobber"
-#           pwsh -Command "Get-Module -Name Az.Accounts -ListAvailable"
-#         shell: bash
-
-#       - name: Azure Login
-#         uses: azure/login@v1
-#         with:
-#           creds: ${{ secrets.AZURE_CREDENTIALS }}
-#           enable-AzPSSession: true
-
-#       - name: Get Available Address Space From IPAM
-#         id: getipam
-#         uses: azure/powershell@v1
-#         with:
-#           inlineScript: |
-#             $scriptPath = "${{ env.GITHUB_WORKSPACE }}/Pipeline-scripts/fetchAddressPrefix.ps1"
-#             $ipamSize = "${{ secrets.IPAM_SIZE }}"
-#             $engineClientId = "${{ secrets.ENGINE_CLIENT_ID }}"
-#             $appName = "${{ secrets.APP_NAME }}"
-#             $space = "${{ secrets.SPACE }}"
-#             $block = "${{ secrets.BLOCK }}"
-#             & pwsh $scriptPath -IPAM_SIZE $ipamSize -engineClientId $engineClientId -appName $appName -space $space -block $block
-#           azPSVersion: "latest"
-
-#       - name: Setup Terraform (Pinned Version)
-#         uses: hashicorp/setup-terraform@v1
-#         with:
-#           terraform_version: "1.7.3"
-
-#       - name: Set up environment variables for subsequent steps
-#         run: |
-#           echo "ARM_CLIENT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.clientId')" >> $GITHUB_ENV
-#           echo "ARM_CLIENT_SECRET=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.clientSecret')" >> $GITHUB_ENV
-#           echo "ARM_SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.subscriptionId')" >> $GITHUB_ENV
-#           echo "ARM_TENANT_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.tenantId')" >> $GITHUB_ENV
-#         shell: bash
-
-#       - name: Terraform Init
-#         run: terraform init
-#         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
-#         env:
-#           ARM_CLIENT_ID: ${{ env.ARM_CLIENT_ID }}
-#           ARM_CLIENT_SECRET: ${{ env.ARM_CLIENT_SECRET }}
-#           ARM_SUBSCRIPTION_ID: ${{ env.ARM_SUBSCRIPTION_ID }}
-#           ARM_TENANT_ID: ${{ env.ARM_TENANT_ID }}
-
-#       - name: Create Terraform Execution Plan
-#         run: |
-#           terraform plan -out=tfplan \
-#             -var "vnet_tag=${{ steps.getipam.outputs.id }}" \
-#             -var 'address_prefix=["${{ steps.getipam.outputs.cidr }}"]'
-#         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
-
-#       - name: Apply Terraform Plan
-#         run: |
-#           terraform apply -auto-approve tfplan
-#         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
 
 
 
