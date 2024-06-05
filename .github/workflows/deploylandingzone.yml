@@ -20,6 +20,8 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
+          auth-type: SERVICE_PRINCIPAL
+
 
 
       - name: Get Available Address Space From IPAM
