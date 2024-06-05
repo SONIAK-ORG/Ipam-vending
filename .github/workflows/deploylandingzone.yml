@@ -47,7 +47,7 @@ jobs:
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            $scriptPath = "${{ env.GITHUB_WORKSPACE }}/Pipeline-scripts/fetchAddressPrefix.ps1"
+            $scriptPath = "${env:GITHUB_WORKSPACE}/Pipeline-scripts/fetchAddressPrefix.ps1"
             $ipamSize = "${{ secrets.IPAM_SIZE }}"
             $engineClientId = "${{ secrets.ENGINE_CLIENT_ID }}"
             $appName = "${{ secrets.APP_NAME }}"
