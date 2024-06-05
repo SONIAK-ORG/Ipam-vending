@@ -15,20 +15,31 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install PowerShell
+      # - name: Install PowerShell
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y wget apt-transport-https software-properties-common
+      #     wget -q "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb"
+      #     sudo dpkg -i packages-microsoft-prod.deb
+      #     sudo apt-get update
+      #     sudo apt-get install -y powershell
+      #   shell: bash
+
+      - name: Uninstall Existing Az.Accounts Modules
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget apt-transport-https software-properties-common
-          wget -q "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb"
-          sudo dpkg -i packages-microsoft-prod.deb
-          sudo apt-get update
-          sudo apt-get install -y powershell
+          pwsh -Command "Get-Module -ListAvailable Az.Accounts | ForEach-Object { Uninstall-Module -Name $_.Name -AllVersions -Force }"
+        shell: bash
+
+      - name: Install Az.Accounts 2.19.0
+        run: |
+          pwsh -Command "Install-Module -Name Az.Accounts -RequiredVersion 2.19.0 -Force -AllowClobber"
+          pwsh -Command "Get-Module -Name Az.Accounts -ListAvailable"
         shell: bash
 
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
 
       - name: Get Available Address Space From IPAM
@@ -36,7 +47,7 @@ jobs:
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            $scriptPath = "${env:GITHUB_WORKSPACE}/Pipeline-scripts/fetchAddressPrefix.ps1"
+            $scriptPath = "${{ env.GITHUB_WORKSPACE }}/Pipeline-scripts/fetchAddressPrefix.ps1"
             $ipamSize = "${{ secrets.IPAM_SIZE }}"
             $engineClientId = "${{ secrets.ENGINE_CLIENT_ID }}"
             $appName = "${{ secrets.APP_NAME }}"
@@ -78,6 +89,7 @@ jobs:
         run: |
           terraform apply -auto-approve tfplan
         working-directory: /home/runner/work/Ipam-vending/Ipam-vending/Terraform
+
 
 
 # name: "Deploy New Landing Zone"
