@@ -36,8 +36,8 @@ default     = "LZ-Test_RG"
 
 #variable "subscription_id" {
 #  type        = string
-#  description = "Subscription ID to use for \"connectivity\" resources."
-#  default = "02cb13eb-8d1a-428f-90b5-27b0f9a06292"
+#  description = "Subscription ID to use for \"landing zone\" resources."
+#  default = "f1da52e0-2221-4ee6-95ce-6929331d7777"
 #}
 
 
